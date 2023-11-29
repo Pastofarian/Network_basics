@@ -1,5 +1,6 @@
 # calcule des sous réseaux à partir d'une adresse IP + masque
 import ipaddress
+import math
 
 def subnet_calculator(base_network, num_subnets, hosts_per_subnet):
     base_net = ipaddress.ip_network(base_network, strict=False)
@@ -21,5 +22,6 @@ def subnet_calculator(base_network, num_subnets, hosts_per_subnet):
 base_network_input = input("Entrez le réseau de base avec CIDR (ex: 220.100.80.0/24): ")
 num_subnets_input = int(input("Entrez le nombre de sous-réseaux désirés: "))
 hosts_per_subnet_input = int(input("Entrez le nombre d'hôtes par sous-réseau: "))
+host_10_percent = round(hosts_per_subnet_input * 1.1)
 
-subnet_calculator(base_network_input, num_subnets_input, hosts_per_subnet_input)
+subnet_calculator(base_network_input, num_subnets_input, host_10_percent)
