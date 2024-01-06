@@ -16,6 +16,10 @@ Fichiers Inclus
 
     subnet_planner.py : Planifie et divise un réseau en sous-réseaux basés sur le nombre de sous-réseaux et d'hôtes souhaités.
 
+    mac_address_checker.py : Vérifie si une adresse MAC est valide et détermine si elle est universelle, locale, unicast ou multicast.
+
+    ipv6_range_calculator.py : Demande une adresse IPv6 avec masque CIDR et calcule la première et la dernière adresse de la plage spécifiée, en affichant les adresses IPv6 complètes sans abréviation.
+
     network_tools_menu.py : Menu principal pour exécuter les scripts ci-dessus.
 
 Prérequis

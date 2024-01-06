@@ -8,6 +8,8 @@ def main_menu():
         print("3. Calculateur de détails du réseau IPv4")
         print("4. Calculateur de plage CIDR à partir d'une plage complète")
         print("5. Planificateur de sous-réseaux")
+        print("6. Vérificateur d'adresse MAC")
+        print("7. Calculateur de plage IPv6 à partir d'une adresse et d'un masque")
         print("0. Quitter")
 
         choice = input("Entrez votre choix : ")
@@ -22,6 +24,10 @@ def main_menu():
             subprocess.run(["python3", "range_to_cidr_calculator.py"])
         elif choice == '5':
             subprocess.run(["python3", "subnet_planner.py"])
+        elif choice == '6':
+            subprocess.run(["python3", "mac_address_checker.py"])  
+        elif choice == '7':
+            subprocess.run(["python3", "calculate_ipv6_range_full.py"])   
         elif choice == '0':
             break
         else:
