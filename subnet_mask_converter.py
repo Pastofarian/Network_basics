@@ -5,8 +5,13 @@ def decimal_mask_to_cidr(mask):
     try:
         # Convertit le masque décimal en objet IP
         ip = ipaddress.IPv4Network(f"0.0.0.0/{mask}")
+        # Calcul du nombre de bits pour le réseau et la machine
+        network_bits = ip.prefixlen
+        host_bits = 32 - network_bits
+        # Calcul du nombre d'adresses disponibles
+        available_addresses = 2**host_bits - 2
         # Affiche la notation CIDR
-        return f"Le masque {mask} en notation CIDR est : /{ip.prefixlen}"
+        return f"Le masque {mask} en notation CIDR est : /{network_bits}\nNbre de bits adresses réseau = {network_bits}\nNbre de bits adresses machine = {host_bits}\nNombre d’adresses disponibles = {available_addresses}"
     except ValueError as e:
         return f"Masque non valide: {e}"
 
@@ -14,8 +19,11 @@ def cidr_to_decimal_mask(cidr):
     try:
         # Crée un réseau avec un masque CIDR
         network = ipaddress.IPv4Network(f"0.0.0.0/{cidr}")
+        network_bits = int(cidr)
+        host_bits = 32 - network_bits
+        available_addresses = 2**host_bits - 2
         # Affiche le masque en format décimal
-        return f"La notation CIDR /{cidr} correspond au masque : {network.netmask}"
+        return f"La notation CIDR /{cidr} correspond au masque : {network.netmask}\nNbre de bits adresses réseau = {network_bits}\nNbre de bits adresses machine = {host_bits}\nNombre d’adresses disponibles = {available_addresses}"
     except ValueError as e:
         return f"Notation CIDR non valide: {e}"
 
@@ -30,3 +38,4 @@ elif choice == '2':
     print(cidr_to_decimal_mask(cidr))
 else:
     print("Choix non valide.")
+

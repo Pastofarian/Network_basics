@@ -8,7 +8,7 @@ Fichiers Inclus
 
     ipv4_address_checker.py : Vérifie si une adresse IPv4 est privée ou publique, et si elle est une adresse réseau ou broadcast.
 
-    subnet_mask_converter.py : Convertit un masque de sous-réseau en notation CIDR et vice versa.
+    subnet_mask_converter.py : Convertit un masque de sous-réseau en notation CIDR et vice versa. Calcule le nombre de bits pour l'adresse réseau et machine et le nombre d'adresses IP disponibles (hôtes).
 
     network_details_calculator.py : Calcule le masque décimal, l'adresse réseau, l'adresse broadcast et le nombre d'hôtes à partir d'une adresse IPv4 et d'un masque CIDR.
 
