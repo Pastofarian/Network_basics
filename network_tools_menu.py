@@ -10,7 +10,7 @@ def main_menu():
         print("5. Planificateur de sous-réseaux")
         print("6. Vérificateur d'adresse MAC")
         print("7. Calculateur de plage IPv6 à partir d'une adresse et d'un masque")
-        print("8. Constructeur de matrice de communication IPv4")
+        print("8. Constructeur de matrice de communication IPv4 (Beta)")
         print("0. Quitter")
 
         choice = input("Entrez votre choix : ")

@@ -1,71 +1,81 @@
 import ipaddress
+import math
 
-# Determine if an IP address belongs to a given network
-def belongs_to_network(ip, network_cidr):
-    return ipaddress.ip_address(ip) in ipaddress.ip_network(network_cidr, strict=False)
+def calculate_subnet_info(network, num_hosts):
+    total_hosts = int(math.ceil(num_hosts * 1.1)) + 2
+    subnet_prefix = 32 - int(math.ceil(math.log2(total_hosts)))
+    for subnet in network.subnets(new_prefix=subnet_prefix):
+        if subnet.num_addresses >= total_hosts:
+            return subnet
+    return None
 
-# Determine if two IP addresses can communicate
-def can_communicate(ip1, mask1, gateway1, ip2, mask2, gateway2, routing_table):
-    network1 = ipaddress.IPv4Network(f"{ip1}/{mask1}", strict=False)
-    network2 = ipaddress.IPv4Network(f"{ip2}/{mask2}", strict=False)
-    
-    if network1.overlaps(network2):
-        return 'OK'
-    
-    for network_cidr in routing_table:
-        if belongs_to_network(ip1, network_cidr) and belongs_to_network(ip2, network_cidr):
-            return 'OK'
-    
-    return 'NOK'
+def subnet_calculator(base_network, hosts_per_subnet_list):
+    base_net = ipaddress.ip_network(base_network, strict=False)
+    current_network = base_net
+    subnets_info = []
 
-# Main function to collect data and fill in the communication table
-def main():
-    num_networks = int(input("Entrez le nombre de réseaux : "))
-    network_names = [chr(65 + i) for i in range(num_networks)]
+    # Sort the list in descending order of number of hosts to allocate largest subnets first
+    sorted_hosts = sorted([(hosts, i) for i, hosts in enumerate(hosts_per_subnet_list)], reverse=True)
 
-    networks = {}
-    all_machines = {}
-    for network_name in network_names:
-        machines_info = input(f"Entrez le nombre de machines dans le réseau {network_name} et leurs noms (ex : 2 D, E) : ")
-        num_machines, machine_names = machines_info.split(maxsplit=1)
-        machine_names = machine_names.replace(' ', '').split(',')
-        networks[network_name] = {
-            'machines': {name: {} for name in machine_names},
-            'gateway': input(f"Entrez l'adresse IP de la passerelle du réseau {network_name} : ")
+    for hosts, original_position in sorted_hosts:
+        new_subnet = calculate_subnet_info(current_network, hosts)
+        if not new_subnet:
+            raise ValueError(f"Cannot accommodate {hosts} hosts in any subnet from {current_network}")
+
+        # Prepare subnet information
+        subnet_info = {
+            'Réseau': chr(65 + original_position),
+            'Nombre adresses': new_subnet.num_addresses,
+            'Adresse du sous-réseau': str(new_subnet.network_address),
+            'Masque': f"{new_subnet.netmask} ou /{new_subnet.prefixlen}",
+            '1ère machine': str(new_subnet.network_address + 1),
+            'Dernière Machine': str(new_subnet.broadcast_address - 1),
+            'Adresse de Diffusion': str(new_subnet.broadcast_address)
         }
-        all_machines.update({name: network_name for name in machine_names})
+        subnets_info.append((original_position, subnet_info))
+        
+        # Update the current network to the remaining address space after the new subnet
+        current_network = list(new_subnet.supernet().address_exclude(new_subnet))[0]
 
-    for machine_name, network_name in all_machines.items():
-        ip_input = input(f"Entrez l'adresse IP pour la machine {machine_name} : ")
-        subnet_mask_input = input(f"Entrez le masque de sous-réseau pour la machine {machine_name} : ")
-        gateway_input = input(f"Entrez l'adresse IP pour la passerelle de la machine {machine_name} : ")
-        networks[network_name]['machines'][machine_name] = (ip_input, subnet_mask_input, gateway_input)
+    # Sort subnets_info based on the original position
+    subnets_info.sort(key=lambda x: x[0])
+    return [info for position, info in subnets_info]
 
-    # Collect entries for the routing table
-    num_routes = int(input("Combien y a-t-il d'entrées dans la table de routage ? "))
-    routing_table = []
-    for _ in range(num_routes):
-        route_cidr = input("Entrez l'entrée de la table de routage (IP/masque en notation CIDR, ex : 192.168.1.0/24) : ")
-        routing_table.append(route_cidr)
+def print_subnet_info(subnets_info):
+    for subnet_info in subnets_info:
+        print(f"Réseau: {subnet_info['Réseau']}")
+        print(f"Nombre adresses: {subnet_info['Nombre adresses']}")
+        print(f"Adresse du sous-réseau: {subnet_info['Adresse du sous-réseau']}")
+        print(f"Masque: {subnet_info['Masque']}")
+        print(f"1ère machine: {subnet_info['1ère machine']}")
+        print(f"Dernière Machine: {subnet_info['Dernière Machine']}")
+        print(f"Adresse de Diffusion: {subnet_info['Adresse de Diffusion']}\n")
 
-    communication_table = {m: {} for m in all_machines}
 
-    for network1 in networks.values():
-        for network2 in networks.values():
-            for machine1, data1 in network1['machines'].items():
-                for machine2, data2 in network2['machines'].items():
-                    if machine1 == machine2:
-                        communication_table[machine1][machine2] = 'X'
-                    else:
-                        ip1, mask1, gateway1 = data1
-                        ip2, mask2, gateway2 = data2
-                        communication_table[machine1][machine2] = can_communicate(ip1, mask1, gateway1, ip2, mask2, gateway2, routing_table)
+def validate_ip_address(address):
+    try:
+        network = ipaddress.ip_network(address, strict=True)
+        return str(network)
+    except ValueError:
+        try:
+            ip = ipaddress.ip_address(address.split('/')[0])
+            network = ipaddress.ip_network(f"{ip}/{address.split('/')[1]}", strict=False)
+            return str(network.network_address) + '/' + address.split('/')[1]
+        except ValueError as ve:
+            print(f"Erreur d'adresse IP : {ve}")
+            return None
 
-    print("Tableau de communication :")
-    headers = sorted(communication_table.keys())
-    print("   ", "  ".join(headers))
-    for key1 in headers:
-        print(key1, " ", "  ".join(communication_table[key1].get(key2, 'NOK') for key2 in headers))
+# Exemple d'utilisation
+base_network_input = input("Entrez le réseau de base avec CIDR (ex: 220.100.80.0/24): ")
+validated_address = validate_ip_address(base_network_input)
+if validated_address is not None:
+    num_subnets_input = int(input("Entrez le nombre de sous-réseaux désirés: "))
+    hosts_per_subnet_list = []
+    for i in range(num_subnets_input):
+        hosts = int(input(f"Entrez le nombre d'hôtes pour le sous-réseau {chr(65 + i)}: "))
+        hosts_per_subnet_list.append(hosts)
 
-if __name__ == "__main__":
-    main()
+    subnets_info = subnet_calculator(validated_address, hosts_per_subnet_list)
+    print_subnet_info(subnets_info)
+else:
+    print("Adresse IP non valide, veuillez réessayer.")
