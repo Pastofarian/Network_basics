@@ -10,6 +10,7 @@ def main_menu():
         print("5. Planificateur de sous-réseaux")
         print("6. Vérificateur d'adresse MAC")
         print("7. Calculateur de plage IPv6 à partir d'une adresse et d'un masque")
+        print("8. Constructeur de matrice de communication IPv4")
         print("0. Quitter")
 
         choice = input("Entrez votre choix : ")
@@ -28,6 +29,8 @@ def main_menu():
             subprocess.run(["python3", "mac_address_checker.py"])  
         elif choice == '7':
             subprocess.run(["python3", "calculate_ipv6_range_full.py"])   
+        elif choice == '8':
+            subprocess.run(["python3", "communication_matrix_builder.py"]) 
         elif choice == '0':
             break
         else:

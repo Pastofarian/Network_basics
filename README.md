@@ -20,6 +20,8 @@ Fichiers Inclus
 
     ipv6_range_calculator.py : Demande une adresse IPv6 avec masque CIDR et calcule la première et la dernière adresse de la plage spécifiée, en affichant les adresses IPv6 complètes sans abréviation.
 
+    communication_matrix_builder.py : Construit une matrice de communication indiquant si la communication entre des paires d'adresses IP dans un réseau IPv4 est possible, en se basant sur les adresses IP, les masques de sous-réseau et une table de routage fournie.
+
     network_tools_menu.py : Menu principal pour exécuter les scripts ci-dessus.
 
 Prérequis
