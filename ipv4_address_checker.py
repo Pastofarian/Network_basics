@@ -1,10 +1,19 @@
-# Check si l'adresse IP est valide / privé / publique / réseau / broadcast
 import ipaddress
 
 def check_ip_address(ip_str):
     try:
         # Convertit la chaîne en objet IP
         ip = ipaddress.ip_address(ip_str)
+
+        # Conditions spécifiques
+        if ip_str == "127.0.0.1":
+            return "boucle locale (Localhost)"
+        elif ip_str.startswith("0") and ip_str != "0.0.0.0":
+            return "adresse 0.x.x.x pas utilisé"
+        elif ip_str == "0.0.0.0":
+            return "adresse IP utilisée pour requête DHCP"
+        elif ip_str == "255.255.255.255":
+            return "adresse de diffusion générale"
 
         # Vérifie si l'adresse est valide
         if ip.is_private:
@@ -34,4 +43,4 @@ def check_ip_address(ip_str):
 
 # Exemple d'utilisation
 ip_to_test = input("Entrez une adresse IPv4 pour la tester: ")
-check_ip_address(ip_to_test)
+print(check_ip_address(ip_to_test))

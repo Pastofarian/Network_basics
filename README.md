@@ -14,13 +14,13 @@ Fichiers Inclus
 
     range_to_cidr_calculator.py : Calcule le numéro de réseau, le masque décimal et la plage CIDR à partir d'une plage d'adresses IP complète.
 
-    subnet_planner.py : Planifie et divise un réseau en sous-réseaux basés sur le nombre de sous-réseaux et d'hôtes souhaités.
+    subnet_planner.py : Planifie et divise un réseau en sous-réseaux basés sur le nombre de sous-réseaux et d'hôtes souhaités. Possibilité d'inclure une machine dans un sous-réseau spécifique.
 
     mac_address_checker.py : Vérifie si une adresse MAC est valide et détermine si elle est universelle, locale, unicast ou multicast.
 
     ipv6_range_calculator.py : Demande une adresse IPv6 avec masque CIDR et calcule la première et la dernière adresse de la plage spécifiée, en affichant les adresses IPv6 complètes sans abréviation.
 
-    communication_matrix_builder.py : Construit une matrice de communication indiquant si la communication entre des paires d'adresses IP dans un réseau IPv4 est possible, en se basant sur les adresses IP, les masques de sous-réseau et une table de routage fournie.
+    communication_matrix_builder.py : Construit une matrice de communication indiquant si la communication entre des paires d'adresses IP dans un réseau IPv4 est possible, en se basant sur les adresses IP, les masques de sous-réseau et une table de routage fournie. Encore en développement !!!!
 
     network_tools_menu.py : Menu principal pour exécuter les scripts ci-dessus.
 
