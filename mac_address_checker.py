@@ -4,23 +4,19 @@ def check_mac_address(mac_str):
     # Vérifie le format de l'adresse MAC
     if not re.match("[0-9a-fA-F]{2}([-:][0-9a-fA-F]{2}){5}$", mac_str):
         return f"{mac_str} n'est pas une adresse MAC valide."
+    
+    # Convertit le premier octet en valeur binaire
+    first_byte_binary = format(int(mac_str[:2], 16), '08b')
+    
+    # Analyse les bits pour déterminer unicast/multicast (bit le plus à droite) et unique/locale (deuxième bit le plus à droite)
+    ul_bit = first_byte_binary[-2]  # Unique/Locale bit
+    ig_bit = first_byte_binary[-1]  # Unicast/Multicast bit
 
-    # Extrait le second caractère du premier octet de l'adresse MAC
-    second_char = mac_str[1].lower()
+    ul_status = "Locale" if ul_bit == '1' else "Unique"
+    ig_status = "Multicast" if ig_bit == '1' else "Unicast"
 
-    # Détermine si l'adresse est universelle ou locale
-    if second_char in '048159cCdD':
-        ul_status = "Universelle"
-    else:
-        ul_status = "Locale"
-
-    # Détermine si l'adresse est unicast ou multicast
-    if second_char in '02468aAcCeE':
-        ig_status = "Unicast"
-    else:
-        ig_status = "Multicast"
-
-    return f"{mac_str} est une adresse MAC {ul_status}, {ig_status}."
+    # Ajoute la représentation binaire du premier octet dans la réponse
+    return f"{mac_str} est une adresse MAC {ul_status} et {ig_status}. {mac_str[:2]} en binaire = {first_byte_binary}."
 
 # Exemple d'utilisation
 mac_to_test = input("Entrez une adresse MAC pour la tester: ")

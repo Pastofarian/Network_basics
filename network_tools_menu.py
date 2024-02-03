@@ -28,7 +28,7 @@ def main_menu():
         elif choice == '6':
             subprocess.run(["python3", "mac_address_checker.py"])  
         elif choice == '7':
-            subprocess.run(["python3", "calculate_ipv6_range_full.py"])   
+            subprocess.run(["python3", "calculate_ipv6_range.py"])   
         elif choice == '8':
             subprocess.run(["python3", "communication_matrix_builder.py"]) 
         elif choice == '0':
